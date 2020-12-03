@@ -650,6 +650,32 @@ namespace Cnp.Sdk.Test.Functional
         }
 
         [Test]
+        public void TestAuthAsync_newMerchantId()
+        {
+            _cnp.SetMerchantId("1234");
+            var authorization = new authorization
+            {
+                id = "1",
+                   reportGroup = "Planets",
+                   orderId = "12344",
+                   amount = 106,
+                   orderSource = orderSourceType.ecommerce,
+                   card = new cardType
+                   {
+                       type = methodOfPaymentTypeEnum.VI,
+                       number = "414100000000000000",
+                       expDate = "1210"
+                   },
+                   customBilling = new customBilling { phone = "1112223333" }
+            };
+
+            CancellationToken cancellationToken = new CancellationToken(false);
+            var response = _cnp.AuthorizeAsync(authorization, cancellationToken);
+
+            Assert.AreEqual("000", response.Result.response);
+        }
+
+        [Test]
         public void SimpleAuthWithSkipRealtimeAUTrue()
         {
             var authorization = new authorization
@@ -703,7 +729,7 @@ namespace Cnp.Sdk.Test.Functional
             Assert.AreEqual("000", response.response);
             Assert.AreEqual(checkDate, response.postDate);
         }
-        
+
         [Test]
         public void SimpleAuthWithSkipRealtimeAUFalse()
         {
@@ -758,7 +784,7 @@ namespace Cnp.Sdk.Test.Functional
             Assert.AreEqual("000", response.response);
             Assert.AreEqual(checkDate, response.postDate);
         }
-        
+
         [Test]
         public void SimpleAuthWithLocation()
         {
@@ -784,6 +810,33 @@ namespace Cnp.Sdk.Test.Functional
             Assert.AreEqual("000", response.response);
             Assert.AreEqual(checkDate, response.postDate);
             Assert.AreEqual("sandbox", response.location);
+        }
+        
+        [Test]
+        public void SimpleAuthWithBusinessIndicator()
+        {
+            var authorization = new authorization
+            {
+                id = "1",
+                reportGroup = "Planets",
+                orderId = "12344",
+                amount = 106,
+                orderSource = orderSourceType.ecommerce,
+                businessIndicator = businessIndicatorEnum.consumerBillPayment,
+                card = new cardType
+                {
+                    type = methodOfPaymentTypeEnum.VI,
+                    number = "414100000000000000",
+                    expDate = "1210"
+                },
+                customBilling = new customBilling { phone = "1112223333" }
+            };
+            var response = _cnp.Authorize(authorization);
+
+            DateTime checkDate = new DateTime(0001, 1, 1, 00, 00, 00);
+
+            Assert.AreEqual("000", response.response);
+            Assert.AreEqual(checkDate, response.postDate);
         }
     }
 }

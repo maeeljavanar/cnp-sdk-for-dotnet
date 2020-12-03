@@ -1,4 +1,4 @@
-﻿<?xml version='1.0' encoding='utf-8'?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Cnp.Sdk.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
@@ -41,8 +41,8 @@
     <Setting Name="password" Type="System.String" Scope="User">
       <Value Profile="(Default)">V2b9F4k7</Value>
     </Setting>
-    <Setting Name="keepAlive" Type="System.String" Scope="User">
-      <Value Profile="(Default)">true</Value>
+    <Setting Name="maxConnections" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="printxml" Type="System.String" Scope="User">
       <Value Profile="(Default)">true</Value>
@@ -76,3 +76,4 @@
     </Setting>
   </Settings>
 </SettingsFile>
+

@@ -5,7 +5,7 @@ using System.Threading;
 namespace Cnp.Sdk.Test.Functional
 {
     [TestFixture]
-    internal class TestAuthReversal
+    internal class TestTransactionReversal
     {
         private CnpOnline _cnp;
 
@@ -16,88 +16,85 @@ namespace Cnp.Sdk.Test.Functional
         }
 
         [Test]
-        public void SimpleAuthReversal()
+        public void SimpleTransactionReversal()
         {
-            var reversal = new authReversal
+            var reversal = new transactionReversal
             {
                 id = "1",
                 reportGroup = "Planets",
                 cnpTxnId = 12345678000L,
                 amount = 106,
-                payPalNotes = "Notes"
             };
 
-            var response = _cnp.AuthReversal(reversal);
+            var response = _cnp.TransactionReversal(reversal);
             Assert.AreEqual("Approved", response.message);
         }
 
         [Test]
-        public void TestAuthReversalHandleSpecialCharacters()
+        public void TestTransactionReversalHandleSpecialCharacters()
         {
-            var reversal = new authReversal
+            var reversal = new transactionReversal()
             {
                 id = "1",
                 reportGroup = "Planets",
                 cnpTxnId = 12345678000L,
                 amount = 106,
-                payPalNotes = "<'&\">"
+                customerId = "<'&\">"
             };
 
 
-            var response = _cnp.AuthReversal(reversal);
+            var response = _cnp.TransactionReversal(reversal);
             Assert.AreEqual("Approved", response.message);
         }
 
         [Test]
-        public void TestAuthReversalAsync()
+        public void TestTransactionReversalAsync()
         {
-            var reversal = new authReversal
+            var reversal = new transactionReversal
             {
                 id = "1",
                 reportGroup = "Planets",
                 cnpTxnId = 12345678000L,
                 amount = 106,
-                payPalNotes = "<'&\">"
+                customerId = "<'&\">"
             };
 
             CancellationToken cancellationToken = new CancellationToken(false);
-            var response = _cnp.AuthReversalAsync(reversal, cancellationToken);
+            var response = _cnp.TransactionReversalAsync(reversal, cancellationToken);
             Assert.AreEqual("000", response.Result.response);
         }
         
         [Test]
-        public void SimpleAuthReversalWithLocation()
+        public void TestSimpleTransactionReversalWithLocation()
         {
-            var reversal = new authReversal
+            var reversal = new transactionReversal
             {
                 id = "1",
                 reportGroup = "Planets",
                 cnpTxnId = 12345678000L,
                 amount = 106,
-                payPalNotes = "Notes"
             };
 
-            var response = _cnp.AuthReversal(reversal);
+            var response = _cnp.TransactionReversal(reversal);
             Assert.AreEqual("sandbox", response.location);
             Assert.AreEqual("Approved", response.message);
         }
-
+        
         [Test]
-        public void TestAuthReversalAsync_newMerchantId()
+        public void TestTransactionReversalWithRecycling()
         {
-            _cnp.SetMerchantId("1234");
-            var reversal = new authReversal
+            var reversal = new transactionReversal
             {
                 id = "1",
                 reportGroup = "Planets",
                 cnpTxnId = 12345678000L,
                 amount = 106,
-                payPalNotes = "<'&\">"
             };
 
-            CancellationToken cancellationToken = new CancellationToken(false);
-            var response = _cnp.AuthReversalAsync(reversal, cancellationToken);
-            Assert.AreEqual("000", response.Result.response);
+            var response = _cnp.TransactionReversal(reversal);
+            Assert.AreEqual("sandbox", response.location);
+            Assert.AreEqual("Approved", response.message);
+            Assert.AreEqual(12345678000L, response.recyclingResponse.creditCnpTxnId);
         }
     }
 }

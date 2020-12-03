@@ -54,6 +54,7 @@ namespace Cnp.Sdk
         public submerchantDebit submerchantDebit;
         public queryTransaction queryTransaction;
         public refundReversal refundReversal;
+        public transactionReversal transactionReversal;
         public registerTokenRequestType registerTokenRequest;
         public sale sale;
         public string merchantId;
@@ -128,6 +129,7 @@ namespace Cnp.Sdk
             else if (payoutOrgCredit != null) xml += payoutOrgCredit.Serialize();
             else if (payoutOrgDebit != null) xml += payoutOrgDebit.Serialize();
             else if (translateToLowValueTokenRequest != null) xml += translateToLowValueTokenRequest.Serialize();
+            else if (transactionReversal != null) xml += transactionReversal.Serialize();
             xml += "\r\n</cnpOnlineRequest>";
 
             return xml;
@@ -297,6 +299,18 @@ namespace Cnp.Sdk
             get { return taxTypeField; }
             set { taxTypeField = value; taxTypeSet = true; }
         }
+        
+        
+        private businessIndicatorEnum businessIndicatorField;
+        private bool businessIndicatorSet;
+        public businessIndicatorEnum businessIndicator
+        {
+            get { return businessIndicatorField; }
+            set { businessIndicatorField = value; businessIndicatorSet = true; }
+        }
+        
+        
+        
         private processingType processingTypeField;
         private bool processingTypeSet;
         public processingType processingType
@@ -465,10 +479,12 @@ namespace Cnp.Sdk
                 {
                     xml += "\r\n<customBilling>" + customBilling.Serialize() + "\r\n</customBilling>";
                 }
+
                 if (taxTypeSet)
                 {
                     xml += "\r\n<taxType>" + taxTypeField + "</taxType>";
                 }
+
                 if (enhancedData != null)
                 {
                     xml += "\r\n<enhancedData>" + enhancedData.Serialize() + "\r\n</enhancedData>";
@@ -535,6 +551,12 @@ namespace Cnp.Sdk
                 {
                     xml += "\r\n<merchantCategoryCode>" + merchantCategoryCode + "</merchantCategoryCode>";
                 }
+                
+
+                if (businessIndicatorSet)
+                {
+                    xml += "\r\n<businessIndicator>" + businessIndicatorField + "</businessIndicator>";
+                }
             }
 
             xml += "\r\n</authorization>";
@@ -592,6 +614,123 @@ namespace Cnp.Sdk
 
     }
 
+    // Authorization Reversal Transaction.
+    public partial class transactionReversal : transactionTypeWithReportGroup
+    {
+        public long cnpTxnId;
+        private long amountField;
+        private bool amountSet;
+        public long amount
+        {
+            get { return amountField; }
+            set { amountField = value; amountSet = true; }
+        }
+
+        private bool pinSet;
+        private string pinField;
+        public string pin
+        {
+            get { return pinField; }
+            set
+            {
+                pinField = value; pinSet = true;
+            }
+        }
+
+        private bool surchargeAmountIsSet;
+        private int surchargeAmountField;
+
+        public int surchargeAmount
+        {
+            get { return surchargeAmountField; }
+            set { surchargeAmountField = value; surchargeAmountIsSet = true; }
+        }
+
+        private bool enhancedDataIsSet;
+        private enhancedData enhancedDataField;
+        public enhancedData enhancedData
+        {
+            get { return enhancedDataField; }
+            set { enhancedDataField = value; enhancedDataIsSet = true; }
+        }
+
+        private bool processingInstructionsIsSet;
+        private processingInstructions processingInstructionsField;
+        public processingInstructions processingInstructions
+        {
+            get { return processingInstructionsField; }
+            set { processingInstructions = value; processingInstructionsIsSet = true; }
+        }
+
+        private bool customBillingIsSet;
+        private customBilling customBillingField;
+
+        public customBilling customBilling
+        {
+            get { return customBillingField; }
+            set { customBillingField = value; customBillingIsSet = true; }
+        }
+
+        private bool lodgingInfoIsSet;
+        private lodgingInfo lodgingInfoField;
+
+        public lodgingInfo lodgingInfo
+        {
+            get { return lodgingInfoField; }
+            set { lodgingInfoField = value; lodgingInfoIsSet = true; }
+        }
+
+        public override string Serialize()
+        {
+            var xml = "\r\n<transactionReversal";
+            xml += " id=\"" + SecurityElement.Escape(id) + "\"";
+            if (customerId != null)
+            {
+                xml += " customerId=\"" + SecurityElement.Escape(customerId) + "\"";
+            }
+            xml += " reportGroup=\"" + SecurityElement.Escape(reportGroup) + "\">";
+            xml += "\r\n<cnpTxnId>" + cnpTxnId + "</cnpTxnId>";
+            if (amountSet)
+            {
+                xml += "\r\n<amount>" + amountField + "</amount>";
+            }
+
+            if (pinSet)
+            {
+                xml += "\r\n<pin>" + SecurityElement.Escape(pinField) + "</pin>";
+            }
+
+            if (surchargeAmountIsSet)
+            {
+                xml += "\r\n<surchargeAmount>" + surchargeAmountField + "</surchargeAmount>";
+            }
+
+            if (this.customBillingIsSet)
+            {
+                xml += this.customBillingField.Serialize();
+            }
+
+            if (this.enhancedDataIsSet)
+            {
+                xml += this.enhancedDataField.Serialize();
+            }
+            
+            if (this.lodgingInfoIsSet)
+            {
+                xml += this.lodgingInfoField.Serialize();
+            }
+            
+            if (this.processingInstructionsIsSet)
+            {
+                xml += this.processingInstructionsField.Serialize();
+            }
+            
+            xml += "\r\n</transactionReversal>";
+            return xml;
+        }
+
+    }
+    
     // Balance Inquiry Transaction.
     public partial class balanceInquiry : transactionTypeWithReportGroup
     {
@@ -743,6 +882,18 @@ namespace Cnp.Sdk
             get { return taxTypeField; }
             set { taxTypeField = value; taxTypeSet = true; }
         }
+        
+        
+        private businessIndicatorEnum businessIndicatorField;
+        private bool businessIndicatorSet;
+        public businessIndicatorEnum businessIndicator
+        {
+            get { return businessIndicatorField; }
+            set { businessIndicatorField = value; businessIndicatorSet = true; }
+        }
+
+        
+        
         public billMeLaterRequest billMeLaterRequest;
         public enhancedData enhancedData;
         public lodgingInfo lodgingInfo;
@@ -849,6 +1000,7 @@ namespace Cnp.Sdk
             {
                 xml += "\r\n<taxType>" + taxTypeField + "</taxType>";
             }
+
             if (billMeLaterRequest != null)
             {
                 xml += "\r\n<billMeLaterRequest>" + billMeLaterRequest.Serialize() + "\r\n</billMeLaterRequest>";
@@ -896,6 +1048,10 @@ namespace Cnp.Sdk
             if (merchantCategoryCode != null)
             {
                 xml += "\r\n<merchantCategoryCode>" + merchantCategoryCode + "</merchantCategoryCode>";
+            }
+            if (businessIndicatorSet)
+            {
+                xml += "\r\n<businessIndicator>" + businessIndicatorField + "</businessIndicator>";
             }
             xml += "\r\n</captureGivenAuth>";
             return xml;
@@ -1018,6 +1174,17 @@ namespace Cnp.Sdk
             get { return taxTypeField; }
             set { taxTypeField = value; taxTypeSet = true; }
         }
+        
+        private businessIndicatorEnum businessIndicatorField;
+        private bool businessIndicatorSet;
+        public businessIndicatorEnum businessIndicator
+        {
+            get { return businessIndicatorField; }
+            set { businessIndicatorField = value; businessIndicatorSet = true; }
+        }
+
+        
+        
         public billMeLaterRequest billMeLaterRequest;
         public pos pos;
         private string pinField;
@@ -1092,6 +1259,8 @@ namespace Cnp.Sdk
             }
             if (payPalNotes != null) xml += "\r\n<payPalNotes>" + SecurityElement.Escape(payPalNotes) + "</payPalNotes>";
             if (actionReason != null) xml += "\r\n<actionReason>" + SecurityElement.Escape(actionReason) + "</actionReason>";
+            if (businessIndicatorSet) xml += "\r\n<businessIndicator>" + businessIndicatorField + "</businessIndicator>";
+
             xml += "\r\n</credit>";
             return xml;
         }
@@ -1499,6 +1668,18 @@ namespace Cnp.Sdk
             get { return taxTypeField; }
             set { taxTypeField = value; taxTypeSet = true; }
         }
+        
+        private businessIndicatorEnum businessIndicatorField;
+        private bool businessIndicatorSet;
+        public businessIndicatorEnum businessIndicator
+        {
+            get { return businessIndicatorField; }
+            set { businessIndicatorField = value; businessIndicatorSet = true; }
+        }
+        
+        
+        
+        
         public enhancedData enhancedData;
         public lodgingInfo lodgingInfo;
         public processingInstructions processingInstructions;
@@ -1608,6 +1789,11 @@ namespace Cnp.Sdk
             {
                 xml += "\r\n<merchantCategoryCode>" + merchantCategoryCode + "</merchantCategoryCode>";
             }
+
+            if (businessIndicatorSet)
+            {
+                xml += "\r\n<businessIndicator>" + businessIndicatorField + "</businessIndicator>";
+            }
             
             xml += "\r\n</forceCapture>";
             return xml;
@@ -1623,6 +1809,7 @@ namespace Cnp.Sdk
         public string authenticationProtocolVersionType;
         private bool authenticatedByMerchantField;
         private bool authenticatedByMerchantSet;
+        private string tokenAuthenticationValue;
         public bool authenticatedByMerchant
         {
             get { return authenticatedByMerchantField; }
@@ -1636,7 +1823,8 @@ namespace Cnp.Sdk
             if (authenticationTransactionId != null) xml += "\r\n<authenticationTransactionId>" + SecurityElement.Escape(authenticationTransactionId) + "</authenticationTransactionId>";
             if (customerIpAddress != null) xml += "\r\n<customerIpAddress>" + SecurityElement.Escape(customerIpAddress) + "</customerIpAddress>";
             if (authenticatedByMerchantSet) xml += "\r\n<authenticatedByMerchant>" + authenticatedByMerchantField + "</authenticatedByMerchant>";
-            if(authenticationProtocolVersionType != null) xml += "\r\n<authenticationProtocolVersionType>" + authenticationProtocolVersionType + "</authenticationProtocolVersionType>";
+            if (authenticationProtocolVersionType != null) xml += "\r\n<authenticationProtocolVersionType>" + authenticationProtocolVersionType + "</authenticationProtocolVersionType>";
+            if (tokenAuthenticationValue != null) xml += "\r\n<tokenAuthenticationValue>" + tokenAuthenticationValue + "</tokenAuthenticationValue";
             return xml;
         }
     }
@@ -2048,6 +2236,17 @@ namespace Cnp.Sdk
             get { return taxTypeField; }
             set { taxTypeField = value; taxTypeSet = true; }
         }
+        
+        private businessIndicatorEnum businessIndicatorField;
+        private bool businessIndicatorSet;
+        public businessIndicatorEnum businessIndicator
+        {
+            get { return businessIndicatorField; }
+            set { businessIndicatorField = value; businessIndicatorSet = true; }
+        }
+        
+        
+        
         public enhancedData enhancedData;
         public processingInstructions processingInstructions;
         public pos pos;
@@ -2325,6 +2524,10 @@ namespace Cnp.Sdk
             if (merchantCategoryCode != null)
             {
                 xml += "\r\n<merchantCategoryCode>" + merchantCategoryCode + "</merchantCategoryCode>";
+            }
+            if (businessIndicatorSet)
+            {
+                xml += "\r\n<businessIndicator>" + businessIndicatorField + "</businessIndicator>";
             }
 
             //if (routingPreferenceSet)
@@ -3405,6 +3608,7 @@ namespace Cnp.Sdk
         public string tokenUrl;
         public string expDate;
         public string cardValidationNum;
+	private string authenticatedShopperID;
         private methodOfPaymentTypeEnum typeField;
         private bool typeSet;
         public methodOfPaymentTypeEnum type
@@ -3422,7 +3626,9 @@ namespace Cnp.Sdk
             set { checkoutIdField = value;
                 checkoutIdSet = true;
             }
-        } 
+        }
+
+ 
 
         public string Serialize()
         {
@@ -3433,6 +3639,7 @@ namespace Cnp.Sdk
             if (cardValidationNum != null) xml += "\r\n<cardValidationNum>" + SecurityElement.Escape(cardValidationNum) + "</cardValidationNum>";
             if (typeSet) xml += "\r\n<type>" + methodOfPaymentSerializer.Serialize(typeField) + "</type>";
             if (checkoutIdSet) xml += "\r\n<checkoutId>" + checkoutId + "</checkoutId>";
+	    if (authenticatedShopperID != null) xml += "\r\n<authenticatednShopperID>" + authenticatedShopperID + "</authenticatedShopperID>";
             return xml;
         }
     }
@@ -4126,7 +4333,6 @@ namespace Cnp.Sdk
     }
 
 
-
     public partial class recurringRequest
     {
         public subscription subscription;
@@ -4181,6 +4387,15 @@ namespace Cnp.Sdk
             set { dentalAmountField = value; dentalAmountSet = true; }
         }
 
+
+	private int copayAmountField;
+	private bool copayAmountSet;
+	public int copayAmount
+	{
+		get { return copayAmountField; }
+		set { copayAmountField = value; copayAmountSet = true; }
+	}
+	
         public string Serialize()
         {
             var xml = "";
@@ -4189,6 +4404,7 @@ namespace Cnp.Sdk
             if (visionAmountSet) xml += "\r\n<visionAmount>" + visionAmountField + "</visionAmount>";
             if (clinicOtherAmountSet) xml += "\r\n<clinicOtherAmount>" + clinicOtherAmountField + "</clinicOtherAmount>";
             if (dentalAmountSet) xml += "\r\n<dentalAmount>" + dentalAmountField + "</dentalAmount>";
+	    if (copayAmountSet) xml += "\r\n<copayAmount>" + copayAmountField + "</copayAmount>";
             return xml;
         }
     }
