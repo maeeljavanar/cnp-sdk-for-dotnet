@@ -38,6 +38,28 @@ namespace Cnp.Sdk.Test.Functional
         }
 
         [Test]
+        public void SimpleCreditWith64StringOrderId()
+        {
+            var creditObj = new credit
+            {
+                id = "1",
+                reportGroup = "planets",
+                amount = 106,
+                orderId = "1234567890123456789012345678901234567890123456789012345678901234",
+                orderSource = orderSourceType.ecommerce,
+                card = new cardType
+                {
+                    type = methodOfPaymentTypeEnum.VI,
+                    number = "4100000000000001",
+                    expDate = "1210"
+                }
+            };
+
+            var response = _cnp.Credit(creditObj);
+            Assert.AreEqual("Approved", response.message);
+        }
+
+        [Test]
         public void SimpleCreditWithMpos()
         {
             var creditObj = new credit
